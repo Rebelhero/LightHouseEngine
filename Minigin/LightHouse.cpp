@@ -49,8 +49,6 @@ void dae::LightHouse::Initialize()
  */
 void dae::LightHouse::LoadGame() const
 {
-
-
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 
 	auto go = std::make_shared<GameObject>();
