@@ -49,6 +49,8 @@ void dae::LightHouse::Initialize()
  */
 void dae::LightHouse::LoadGame() const
 {
+
+
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 
 	auto go = std::make_shared<GameObject>();
@@ -103,18 +105,6 @@ void dae::LightHouse::Run()
 		float tickDelta = 0.f;	//the value that gets reduced by msPerUpdate
 
 		sceneManager.Start();
-
-		//while (doContinue)
-		//{
-		//	auto currentTime = high_resolution_clock::now();
-		//	float deltaTime = duration<float>(currentTime - lastTime).count();
-
-		//	doContinue = input.ProcessInput();
-		//	sceneManager.Update(deltaTime);
-		//	renderer.Render();
-
-		//	lastTime = currentTime;
-		//}
 
 		while (doContinue)
 		{

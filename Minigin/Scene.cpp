@@ -33,3 +33,8 @@ void Scene::Render() const
 		object->Render();
 }
 
+std::string dae::Scene::GetName() const
+{
+	return m_Name;
+}
+
