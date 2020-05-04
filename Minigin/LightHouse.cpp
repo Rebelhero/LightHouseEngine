@@ -16,12 +16,13 @@
 using namespace std;
 using namespace std::chrono;
 
-dae::LightHouse::LightHouse(float tickRate)
+Engine::LightHouse::LightHouse(float tickRate)
 {
 	m_FixedTimeStep = tickRate;
+	Initialize();
 }
 
-void dae::LightHouse::Initialize()
+void Engine::LightHouse::Initialize()
 {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
@@ -42,41 +43,20 @@ void dae::LightHouse::Initialize()
 	}
 
 	Renderer::GetInstance().Init(m_Window);
+
+	// tell the resource manager where he can find the game data
+	ResourceManager::GetInstance().Init("../Data/");
 }
 
 /**
  * Code constructing the scene world starts here
  */
-void dae::LightHouse::LoadGame() const
+void Engine::LightHouse::LoadGame() const
 {
-	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 
-	auto go = std::make_shared<GameObject>();
-	auto background = std::make_shared<RenderComponent>(go, "background.jpg");
-	go->AddComponent(std::move(background));
-	scene.Add(go);
-
-	go = std::make_shared<GameObject>();
-	auto logo = std::make_shared<RenderComponent>(go, "logo.png");
-	go->AddComponent(logo);
-	go->SetPosition(216, 180);
-	scene.Add(go);
-
-	go = std::make_shared<GameObject>();
-	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	auto textComponent = std::make_shared<TextComponent>(go, "Programming 4 Assignment", font);
-	go->AddComponent(std::move(textComponent));
-	go->SetPosition(80, 20);
-	scene.Add(go);
-
-	go = std::make_shared<GameObject>();
-	auto newFont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
-	go->AddComponent(std::make_shared<FPSCounterComponent>(go, newFont));
-	go->SetPosition(20, 30);
-	scene.Add(go);
 }
 
-void dae::LightHouse::Cleanup()
+void Engine::LightHouse::Cleanup()
 {
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(m_Window);
@@ -84,13 +64,8 @@ void dae::LightHouse::Cleanup()
 	SDL_Quit();
 }
 
-void dae::LightHouse::Run()
+void Engine::LightHouse::Run()
 {
-	Initialize();
-
-	// tell the resource manager where he can find the game data
-	ResourceManager::GetInstance().Init("../Data/");
-
 	LoadGame();
 
 	{

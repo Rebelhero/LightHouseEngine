@@ -4,7 +4,7 @@
 #include "TextComponent.h"
 #include "Font.h"
 
-dae::FPSCounterComponent::FPSCounterComponent(const std::shared_ptr<GameObject>& owner, const std::shared_ptr<Font>& font)
+Engine::FPSCounterComponent::FPSCounterComponent(const std::shared_ptr<GameObject>& owner, const std::shared_ptr<Font>& font)
 	: BaseComponent(owner)
 	, m_FrameCount{}
 	, m_PassedTime{}
@@ -12,12 +12,12 @@ dae::FPSCounterComponent::FPSCounterComponent(const std::shared_ptr<GameObject>&
 {
 }
 
-void dae::FPSCounterComponent::Start()
+void Engine::FPSCounterComponent::Start()
 {
 	m_pTextComponent->Start();
 }
 
-void dae::FPSCounterComponent::Update(float deltaTime)
+void Engine::FPSCounterComponent::Update(float deltaTime)
 {
 	m_FrameCount++;	//gets executed once per frame
 	m_PassedTime += deltaTime;
@@ -32,7 +32,7 @@ void dae::FPSCounterComponent::Update(float deltaTime)
 	m_pTextComponent->Update(deltaTime);
 }
 
-void dae::FPSCounterComponent::Render()
+void Engine::FPSCounterComponent::Render()
 {
 	m_pTextComponent->Render();
 }

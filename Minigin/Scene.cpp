@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "GameObject.h"
 
-using namespace dae;
+using namespace Engine;
 
 unsigned int Scene::m_IdCounter = 0;
 
@@ -15,7 +15,7 @@ void Scene::Add(const std::shared_ptr<SceneObject>& object)
 	m_Objects.push_back(object);
 }
 
-void dae::Scene::Start()
+void Engine::Scene::Start()
 {
 	for (auto& object : m_Objects)
 		object->Start();
@@ -33,7 +33,7 @@ void Scene::Render() const
 		object->Render();
 }
 
-std::string dae::Scene::GetName() const
+std::string Engine::Scene::GetName() const
 {
 	return m_Name;
 }

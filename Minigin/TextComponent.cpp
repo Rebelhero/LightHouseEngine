@@ -9,7 +9,7 @@
 #include "Font.h"
 #include "Texture2D.h"
 
-dae::TextComponent::TextComponent(const std::shared_ptr<GameObject>& owner, const std::string& text, const std::shared_ptr<Font>& font)
+Engine::TextComponent::TextComponent(const std::shared_ptr<GameObject>& owner, const std::string& text, const std::shared_ptr<Font>& font)
 	: BaseComponent(owner)
 	, m_Transform{ m_pOwner.lock()->GetTransform() }
 	, m_NeedsUpdate(true)
@@ -19,11 +19,11 @@ dae::TextComponent::TextComponent(const std::shared_ptr<GameObject>& owner, cons
 {
 }
 
-void dae::TextComponent::Start()
+void Engine::TextComponent::Start()
 {
 }
 
-void dae::TextComponent::Update(float deltaTime)
+void Engine::TextComponent::Update(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
@@ -46,7 +46,7 @@ void dae::TextComponent::Update(float deltaTime)
 	}
 }
 
-void dae::TextComponent::Render()
+void Engine::TextComponent::Render()
 {
 	if (m_Texture != nullptr)
 	{
@@ -55,7 +55,7 @@ void dae::TextComponent::Render()
 	}
 }
 
-void dae::TextComponent::SetText(const std::string& text)
+void Engine::TextComponent::SetText(const std::string& text)
 {
 	m_Text = text;
 	m_NeedsUpdate = true;

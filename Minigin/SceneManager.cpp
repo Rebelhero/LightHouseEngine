@@ -2,13 +2,13 @@
 #include "SceneManager.h"
 #include "Scene.h"
 
-void dae::SceneManager::Start()
+void Engine::SceneManager::Start()
 {
 	for (auto& scene : m_Scenes)
 		scene->Start();
 }
 
-void dae::SceneManager::Update(float deltaTime)
+void Engine::SceneManager::Update(float deltaTime)
 {
 	//for(auto& scene : m_Scenes)
 	//	scene->Update(deltaTime);
@@ -17,19 +17,15 @@ void dae::SceneManager::Update(float deltaTime)
 		m_pCurrentScene->Update(deltaTime);
 }
 
-void dae::SceneManager::Render()
+void Engine::SceneManager::Render()
 {
 	for (const auto& scene : m_Scenes)
 		scene->Render();
 }
 
-dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
+Engine::Scene& Engine::SceneManager::CreateScene(const std::string& name)
 {
-	for (size_t i = 0; i < m_Scenes.size(); i++)
-	{
-		if (m_Scenes[i]->GetName() == name)
-			throw std::runtime_error("Could not create new scene " + name + ", a scene with that name already exists!");
-	}
+	CheckSceneDuplicate(name);
 
 	const auto scene = std::shared_ptr<Scene>(new Scene(name));
 
@@ -40,7 +36,17 @@ dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
 	return *scene;
 }
 
-void dae::SceneManager::ChangeCurrentScene(const std::string& name)
+void Engine::SceneManager::AddScene(const std::shared_ptr<Scene>& scene)
+{
+	CheckSceneDuplicate(scene->GetName());
+
+	if (m_Scenes.empty())
+		m_pCurrentScene = scene;
+
+	m_Scenes.push_back(scene);
+}
+
+void Engine::SceneManager::ChangeCurrentScene(const std::string& name)
 {
 	for (size_t i = 0; i < m_Scenes.size(); i++)
 	{
@@ -52,4 +58,13 @@ void dae::SceneManager::ChangeCurrentScene(const std::string& name)
 	}
 
 	std::cout << "Failed to find scene with the name " << name << "\n";
+}
+
+void Engine::SceneManager::CheckSceneDuplicate(const std::string& name)
+{
+	for (size_t i = 0; i < m_Scenes.size(); i++)
+	{
+		if (m_Scenes[i]->GetName() == name)
+			throw std::runtime_error("Could not create new scene " + name + ", a scene with that name already exists!");
+	}
 }

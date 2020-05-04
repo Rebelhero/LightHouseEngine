@@ -1,30 +1,28 @@
 #pragma once
 #include "SceneManager.h"
 
-namespace dae
+namespace Engine
 {
 	class SceneObject;
 	class Scene
 	{
 		friend Scene& SceneManager::CreateScene(const std::string& name);
 	public:
-		void Add(const std::shared_ptr<SceneObject>& object);
-
-		void Start();
-		void Update(float deltaTime);
-		void Render() const;
-
-		std::string GetName() const;
-
-		~Scene();
+		explicit Scene(const std::string& name);
+		virtual ~Scene();
 		Scene(const Scene& other) = delete;
 		Scene(Scene&& other) = delete;
 		Scene& operator=(const Scene& other) = delete;
 		Scene& operator=(Scene&& other) = delete;
 
-	private: 
-		explicit Scene(const std::string& name);
+		virtual void Start();
+		virtual void Update(float deltaTime);
+		virtual void Render() const;
 
+		void Add(const std::shared_ptr<SceneObject>& object);
+		std::string GetName() const;
+
+	protected:
 		std::string m_Name;
 		std::vector < std::shared_ptr<SceneObject>> m_Objects{};
 

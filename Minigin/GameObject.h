@@ -4,7 +4,7 @@
 #include "BaseComponent.h"
 #include "RenderComponent.h"
 
-namespace dae
+namespace Engine
 {
 	class GameObject final : public SceneObject
 	{

@@ -3,7 +3,7 @@
 #include "ResourceManager.h"
 #include "Renderer.h"
 
-dae::GameObject::~GameObject()
+Engine::GameObject::~GameObject()
 {
 	//for (m_Components.size())
 	//{
@@ -11,35 +11,35 @@ dae::GameObject::~GameObject()
 	//}
 }
 
-void dae::GameObject::Start()
+void Engine::GameObject::Start()
 {
 	for (auto& component : m_Components)
 		component->Start();
 }
 
-void dae::GameObject::Update(float deltaTime)
+void Engine::GameObject::Update(float deltaTime)
 {
 	for (auto& component : m_Components)
 		component->Update(deltaTime);
 }
 
-void dae::GameObject::Render() const
+void Engine::GameObject::Render() const
 {
 	for (auto& component : m_Components)
 		component->Render();
 }
 
-void dae::GameObject::SetPosition(float x, float y)
+void Engine::GameObject::SetPosition(float x, float y)
 {
 	m_Transform.SetPosition(x, y, 0.0f);
 }
 
-void dae::GameObject::AddComponent(const std::shared_ptr<BaseComponent>& component)
+void Engine::GameObject::AddComponent(const std::shared_ptr<BaseComponent>& component)
 {
 	m_Components.push_back(component);
 }
 
-const dae::Transform& dae::GameObject::GetTransform()
+const Engine::Transform& Engine::GameObject::GetTransform()
 {
 	return m_Transform;
 }

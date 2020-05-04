@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseComponent.h"
 
-namespace dae
+namespace Engine
 {
 	class TextComponent;
 	class Font;

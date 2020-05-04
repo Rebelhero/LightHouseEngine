@@ -6,12 +6,12 @@
 #include "SDL.h"
 
 #include "LightHousePCH.h"
-#include "LightHouse.h"
+#include "MainGame.h"
 
 int main(int, char* [])
 {
-	dae::LightHouse engine{ 0.0167f };
-	engine.Run();
+	MainGame mainGame{};
+	mainGame.Run();
 
 	return 0;
 }

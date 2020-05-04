@@ -5,7 +5,7 @@
 #pragma warning(pop)
 #include "BaseComponent.h"
 
-namespace dae
+namespace Engine
 {
 	class Texture2D;
 	class Transform;
