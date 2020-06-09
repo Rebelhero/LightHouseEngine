@@ -11,7 +11,7 @@ void MainGame::Run()
 	Engine::LightHouse engine{ 0.0167f };
 
 	//add scenes here:
-	Engine::SceneManager::GetInstance().AddScene(std::make_shared<MainScene>("Demo"));
+	Engine::SceneManager::GetInstance().AddScene(std::make_shared<MainScene>("MainScene"));
 
 	engine.Run();
 }
