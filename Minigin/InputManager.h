@@ -9,16 +9,23 @@ namespace Engine
 		ButtonA,
 		ButtonB,
 		ButtonX,
-		ButtonY
+		ButtonY,
+		DPadUp,
+		DPadDown,
+		DPadLeft,
+		DPadRight
 	};
 
 	class InputManager final : public Singleton<InputManager>
 	{
 	public:
 		bool ProcessInput();
-		bool IsPressed(ControllerButton button) const;
+		bool IsPressed(short playerID, ControllerButton button) const;
+		bool IsPressed(short playerID, DWORD key) const;
 	private:
-		XINPUT_STATE m_CurrentState{};
+		XINPUT_STATE m_Player1State{};
+		XINPUT_STATE m_Player2State{};
+		int m_KeyboardPressed{ 0x8000 };
 	};
 
 }

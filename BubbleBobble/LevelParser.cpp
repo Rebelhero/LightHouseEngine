@@ -17,8 +17,8 @@ std::vector<Block> LevelParser::ReadLevelFile()
 	while (levelFile)
 	{
 		levelFile.read((char*)&currentBlock.id, sizeof(char));
-		levelFile.read((char*)&currentBlock.position.x, sizeof(int));
-		levelFile.read((char*)&currentBlock.position.y, sizeof(int));
+		levelFile.read((char*)&currentBlock.position.x, sizeof(short));
+		levelFile.read((char*)&currentBlock.position.y, sizeof(short));
 
 		if (levelFile.eof())
 			break;

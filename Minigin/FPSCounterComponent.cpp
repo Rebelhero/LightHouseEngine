@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "TextComponent.h"
 #include "Font.h"
+#include "InputManager.h"
 
 Engine::FPSCounterComponent::FPSCounterComponent(const std::shared_ptr<GameObject>& owner, const std::shared_ptr<Font>& font)
 	: BaseComponent(owner)

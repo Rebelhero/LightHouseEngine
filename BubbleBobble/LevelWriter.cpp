@@ -18,8 +18,8 @@ void LevelWriter::WriteLevelFile()
 		int positionX{ m_Blocks[i].position.x };
 		int positionY{ m_Blocks[i].position.y };
 		ofstream.write((const char*)&blockType, sizeof(char));
-		ofstream.write((const char*)&positionX, sizeof(int));
-		ofstream.write((const char*)&positionY, sizeof(int));
+		ofstream.write((const char*)&positionX, sizeof(short));
+		ofstream.write((const char*)&positionY, sizeof(short));
 	}
 
 	ofstream.close();

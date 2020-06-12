@@ -5,8 +5,11 @@
 
 bool Engine::InputManager::ProcessInput()
 {
-	ZeroMemory(&m_CurrentState, sizeof(XINPUT_STATE));
-	XInputGetState(0, &m_CurrentState);
+	ZeroMemory(&m_Player1State, sizeof(XINPUT_STATE));
+	XInputGetState(0, &m_Player1State);	//0 to 3 for the different controller slots, Player 1
+
+	ZeroMemory(&m_Player2State, sizeof(XINPUT_STATE));
+	XInputGetState(1, &m_Player2State);	//Player 2
 
 	SDL_Event e;
 	while (SDL_PollEvent(&e)) {
@@ -24,8 +27,12 @@ bool Engine::InputManager::ProcessInput()
 	return true;
 }
 
-bool Engine::InputManager::IsPressed(ControllerButton button) const
+bool Engine::InputManager::IsPressed(short playerID, ControllerButton button) const
 {
+	//which of the two players are we processing right now?
+	XINPUT_STATE m_CurrentState = (playerID == 0) ? m_Player1State : m_Player2State;
+
+	//Controller Input
 	switch (button)
 	{
 	case ControllerButton::ButtonA:
@@ -36,7 +43,25 @@ bool Engine::InputManager::IsPressed(ControllerButton button) const
 		return m_CurrentState.Gamepad.wButtons & XINPUT_GAMEPAD_X;
 	case ControllerButton::ButtonY:
 		return m_CurrentState.Gamepad.wButtons & XINPUT_GAMEPAD_Y;
+	case ControllerButton::DPadUp:
+		return m_CurrentState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP;
+	case ControllerButton::DPadDown:
+		return m_CurrentState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN;
+	case ControllerButton::DPadLeft:
+		return m_CurrentState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT;
+	case ControllerButton::DPadRight:
+		return m_CurrentState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT;
 	default: return false;
 	}
+
+	//Keyboard Input
+	if (GetKeyState(VK_UP) & m_KeyboardPressed)
+		std::cout << "success" << "\n";
+}
+
+bool Engine::InputManager::IsPressed(short playerID, DWORD key) const
+{
+	//Keyboard Input
+	return GetKeyState(key) & m_KeyboardPressed;
 }
 

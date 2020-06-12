@@ -7,6 +7,8 @@
 #include "Rect.h"
 #include "LevelWriter.h"
 #include "LevelParser.h"
+#include "SVGParser.h"
+#include "CharacterControllerComponent.h"
 
 MainScene::MainScene(const std::string& name, int windowScale)
 	: Scene(name)
@@ -40,8 +42,18 @@ void MainScene::Start()
 	//go->SetPosition(20, 30);
 	//Add(go);
 
+	go = std::make_shared<Engine::GameObject>();
+	auto characterController = std::make_shared<Engine::CharacterControllerComponent>(go, 0);
+	go->AddComponent(characterController);
+	go->SetPosition(20, 30);
+	Add(go);
+
 	//WriteLevel01File();
 	AddLevel01Layout();
+	std::vector<std::vector<FVector2>> svgVertices{};
+	//Careful, old parser from Programming 2
+	SVGParser svgParser{};
+	svgParser.GetVerticesFromSvgFile("../Data/Levels/level01.svg", svgVertices);
 
 	//Base Start for every added component
 	Scene::Start();
