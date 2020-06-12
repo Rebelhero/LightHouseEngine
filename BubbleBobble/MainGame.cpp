@@ -8,10 +8,10 @@
 
 void MainGame::Run()
 {
-	Engine::LightHouse engine{ 0.0167f };
+	Engine::LightHouse engine{ 0.0167f, 2 };
 
 	//add scenes here:
-	Engine::SceneManager::GetInstance().AddScene(std::make_shared<MainScene>("MainScene"));
+	Engine::SceneManager::GetInstance().AddScene(std::make_shared<MainScene>("MainScene", engine.GetWindowScale()));
 
 	engine.Run();
 }

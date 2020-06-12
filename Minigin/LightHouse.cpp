@@ -16,9 +16,15 @@
 using namespace std;
 using namespace std::chrono;
 
-Engine::LightHouse::LightHouse(float tickRate)
+Engine::LightHouse::LightHouse(float tickRate, int windowScale)
 {
 	m_FixedTimeStep = tickRate;
+	m_ScaleFactor = windowScale;
+
+	//Standard Values
+	m_WindowWidth = 320;
+	m_WindowHeight = 240;
+
 	Initialize();
 }
 
@@ -30,11 +36,11 @@ void Engine::LightHouse::Initialize()
 	}
 
 	m_Window = SDL_CreateWindow(
-		"Programming 4 assignment",
+		"Programming 4 Assignment",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
-		640,
-		480,
+		m_WindowWidth * m_ScaleFactor,
+		m_WindowHeight * m_ScaleFactor,
 		SDL_WINDOW_OPENGL
 	);
 	if (m_Window == nullptr)
@@ -98,4 +104,9 @@ void Engine::LightHouse::Run()
 	}
 
 	Cleanup();
+}
+
+int Engine::LightHouse::GetWindowScale()
+{
+	return m_ScaleFactor;
 }
