@@ -14,6 +14,7 @@
 MainScene::MainScene(const std::string& name, int windowScale)
 	: Scene(name)
 	, m_WindowScale{ windowScale }
+	, m_Enemies{ std::make_shared<std::vector<std::shared_ptr<Engine::EnemyControllerComponent>>>() }
 {
 }
 
@@ -55,6 +56,18 @@ void MainScene::Start()
 	go->SetPosition(100, 410);
 	Add(go);
 
+	//Player2
+	//go = std::make_shared<Engine::GameObject>();
+	//rect = Rect(0, 32, playerDimension, playerDimension);
+	//playerSprite = std::make_shared<Engine::RenderComponent>(go, "../Data/sprites0.png", rect, 0, 0, playerScaled, playerScaled);
+	//go->AddComponent(playerSprite);
+
+	//auto character2Controller = std::make_shared<Engine::CharacterControllerComponent>(go, 1, m_LevelColliders, m_Enemies, playerScaled, playerScaled);
+	//go->AddComponent(character2Controller);
+	//go->SetPosition(200, 410);
+	//Add(go);
+
+
 	go = std::make_shared<Engine::GameObject>();
 	auto newFont = Engine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
 	go->AddComponent(std::make_shared<Engine::FPSCounterComponent>(go, newFont));
@@ -76,7 +89,7 @@ void MainScene::AddEnemies()
 
 	auto enemyController = std::make_shared<Engine::EnemyControllerComponent>(go, m_LevelColliders, enemyScaled, enemyScaled);
 	go->AddComponent(enemyController);
-	m_Enemies.push_back(enemyController);
+	m_Enemies->push_back(enemyController);
 	go->SetPosition(300, 110);
 	Add(go);
 }
@@ -229,7 +242,7 @@ void MainScene::AddLevel01Layout()
 	int blockScaled = blockDimension * m_WindowScale;
 
 	for (size_t i = 0; i < levelBlocks.size(); i++)
-	{	
+	{
 		//TODO: fix  srcRect read, for now it'll only work for the top row blocks
 		unsigned int blockSourceX{ levelBlocks[i].id * blockDimension };
 		unsigned int blockSourceY{ 0 };

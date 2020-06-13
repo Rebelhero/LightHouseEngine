@@ -57,6 +57,5 @@ public:
 	virtual void execute(Engine::CharacterState& state) override
 	{
 		state = Engine::CharacterState::Shoot;
-		std::cout << "ShootCommand" << "\n";
 	}
 };

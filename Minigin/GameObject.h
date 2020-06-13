@@ -14,7 +14,10 @@ namespace Engine
 		void Render() const override;
 
 		void SetPosition(float x, float y);
+		void AddChild(const std::shared_ptr<GameObject>& child);
 		void AddComponent(const std::shared_ptr<BaseComponent>& component);
+		void RemoveComponent(const std::shared_ptr<BaseComponent>& toDelete);
+		void RemoveChild(const std::shared_ptr<GameObject>& toDelete);
 		template<class T> std::shared_ptr<T> GetComponent();
 		const std::shared_ptr<Transform> GetTransform();
 
@@ -29,6 +32,7 @@ namespace Engine
 	private:
 		std::shared_ptr<Transform> m_pTransform{};
 		std::vector<std::shared_ptr<BaseComponent>> m_Components{};
+		std::vector<std::shared_ptr<GameObject>> m_Children{};
 	};
 
 	template<class T>

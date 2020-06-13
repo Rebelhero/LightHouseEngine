@@ -9,12 +9,12 @@ class Command;
 namespace Engine
 {
 	class ColliderComponent;
+	class GameObject;
 
 	enum class EnemyState
 	{
 		MoveLeft,
 		MoveRight,
-		Jump,
 		Idle
 	};
 
@@ -27,7 +27,10 @@ namespace Engine
 		void Update(float deltaTime) override;
 		void Render() override;
 
+		std::weak_ptr<GameObject> GetOwner();
 		bool IsIntersecting(Rect& other);
+		bool IsFrozen();
+		void Trap();
 
 		EnemyControllerComponent(const EnemyControllerComponent&) = delete;
 		EnemyControllerComponent(EnemyControllerComponent&&) = delete;
@@ -42,7 +45,7 @@ namespace Engine
 		FVector2 m_Acceleration{ 0.f, 981.f };
 		int m_Width{};
 		int m_Height{};
-		float m_JumpCooldown{ 0.f };
+		float m_FreezeTime{ 0.f };
 
 		void HandleMovement(bool isMovingLeft, float deltaTime);
 		void ApplyGravity(std::shared_ptr<Transform> transform, float deltaTime);

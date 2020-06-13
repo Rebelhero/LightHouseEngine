@@ -11,6 +11,7 @@ namespace Engine
 {
 	class ColliderComponent;
 	class EnemyControllerComponent;
+	class GameObject;
 
 	enum class CharacterState
 	{
@@ -26,7 +27,7 @@ namespace Engine
 	public:
 		CharacterControllerComponent(const std::shared_ptr<GameObject>& owner, int playerID,
 			std::vector<std::shared_ptr<ColliderComponent>> levelCollision,
-			std::vector<std::shared_ptr<EnemyControllerComponent>> enemies, int width, int height);
+			std::shared_ptr<std::vector<std::shared_ptr<EnemyControllerComponent>>> enemies, int width, int height);
 		void Start() override;
 		void Update(float deltaTime) override;
 		void Render() override;
@@ -40,7 +41,8 @@ namespace Engine
 		int m_PlayerID{};
 		std::vector<std::unique_ptr<Command>> m_Commands{};
 		std::vector<std::shared_ptr<ColliderComponent>> m_LevelCollision{};
-		std::vector<std::shared_ptr<EnemyControllerComponent>> m_Enemies{};
+		std::shared_ptr<std::vector<std::shared_ptr<EnemyControllerComponent>>> m_Enemies{};
+		std::vector< std::shared_ptr<GameObject>> m_Bubbles{};
 		CharacterState m_OldState{};
 		CharacterState m_CurrentState{};
 		float m_Speed{ 100.f };
@@ -51,10 +53,12 @@ namespace Engine
 		float m_JumpCooldown{ 0.f };
 		int m_Lives{ 4 };
 		float m_InvincibilityTime{ 0.f };
+		float m_BulletCooldown{ 0.f };
 
 		void HandleInput();
 		void HandleMovement(bool isMovingLeft, float deltaTime);
 		void ApplyGravity(std::shared_ptr<Transform> transform, float deltaTime);
+		void UpdateBubbles();
 		bool IsIntersecting(int x, int y);
 		bool IsIntersectingWithEnemies();
 		bool IsTouchingGround();

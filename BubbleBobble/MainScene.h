@@ -17,7 +17,7 @@ public:
 private:
 	int m_WindowScale;
 	std::vector<std::shared_ptr<Engine::ColliderComponent>> m_LevelColliders{};
-	std::vector<std::shared_ptr<Engine::EnemyControllerComponent>> m_Enemies{};
+	std::shared_ptr<std::vector<std::shared_ptr<Engine::EnemyControllerComponent>>> m_Enemies{};
 
 	void AddEnemies();
 	void WriteLevel01File();

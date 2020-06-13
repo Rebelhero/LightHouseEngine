@@ -93,6 +93,9 @@
     <ClInclude Include="EnemyControllerComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="BubbleComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -147,6 +150,9 @@
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="EnemyControllerComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="BubbleComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>

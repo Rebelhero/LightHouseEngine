@@ -26,8 +26,8 @@ void Engine::EnemyControllerComponent::Start()
 
 void Engine::EnemyControllerComponent::Update(float deltaTime)
 {
-	if (m_JumpCooldown >= 0.f)
-		m_JumpCooldown -= deltaTime;
+	if (m_FreezeTime >= 0.f)
+		m_FreezeTime -= deltaTime;
 
 	switch (m_CurrentState)
 	{
@@ -47,21 +47,6 @@ void Engine::EnemyControllerComponent::Update(float deltaTime)
 		ApplyGravity(pTransform, deltaTime);
 		break;
 	}
-	case EnemyState::Jump:
-	{
-		std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
-
-		if (m_JumpCooldown > 0.f || !IsTouchingGround())
-		{
-			m_CurrentState = EnemyState::Idle;
-			ApplyGravity(pTransform, deltaTime);
-			break;
-		}
-
-		m_JumpCooldown = 0.5f;
-		m_Velocity.y = -500.f;
-		ApplyGravity(pTransform, deltaTime);
-	}
 	default:
 		break;
 	}
@@ -69,6 +54,11 @@ void Engine::EnemyControllerComponent::Update(float deltaTime)
 
 void Engine::EnemyControllerComponent::Render()
 {
+}
+
+std::weak_ptr<GameObject> Engine::EnemyControllerComponent::GetOwner()
+{
+	return m_pOwner;
 }
 
 bool Engine::EnemyControllerComponent::IsIntersecting(Rect& other)
@@ -80,6 +70,23 @@ bool Engine::EnemyControllerComponent::IsIntersecting(Rect& other)
 		(collider.x + collider.width) > other.x &&
 		collider.y < (other.y + other.height) &&
 		(collider.y + collider.height) > other.y;
+}
+
+bool Engine::EnemyControllerComponent::IsFrozen()
+{
+	if (m_CurrentState == EnemyState::Idle)
+		return true;
+	else
+		return false;
+}
+
+void Engine::EnemyControllerComponent::Trap()
+{
+	if (m_CurrentState == EnemyState::Idle)
+		return;
+
+	m_CurrentState = EnemyState::Idle;
+	m_FreezeTime = 5.f;
 }
 
 void Engine::EnemyControllerComponent::HandleMovement(bool isMovingLeft, float deltaTime)

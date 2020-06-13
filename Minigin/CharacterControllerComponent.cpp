@@ -7,11 +7,12 @@
 #include <algorithm>
 #include "ColliderComponent.h"
 #include "EnemyControllerComponent.h"
+#include "BubbleComponent.h"
 
 using namespace Engine;
 
 Engine::CharacterControllerComponent::CharacterControllerComponent(const std::shared_ptr<GameObject>& owner, int playerID,
-	std::vector<std::shared_ptr<ColliderComponent>> levelCollision, std::vector<std::shared_ptr<EnemyControllerComponent>> enemies,
+	std::vector<std::shared_ptr<ColliderComponent>> levelCollision, std::shared_ptr<std::vector<std::shared_ptr<EnemyControllerComponent>>> enemies,
 	int width, int height)
 	: BaseComponent(owner)
 	, m_PlayerID{ playerID }
@@ -42,6 +43,10 @@ void Engine::CharacterControllerComponent::Update(float deltaTime)
 		m_JumpCooldown -= deltaTime;
 	if (m_InvincibilityTime >= 0.f)
 		m_InvincibilityTime -= deltaTime;
+	if (m_BulletCooldown >= 0.f)
+		m_BulletCooldown -= deltaTime;
+
+	UpdateBubbles();
 
 	switch (m_CurrentState)
 	{
@@ -75,12 +80,42 @@ void Engine::CharacterControllerComponent::Update(float deltaTime)
 		m_JumpCooldown = 0.5f;
 		m_Velocity.y = -500.f;
 		ApplyGravity(pTransform, deltaTime);
+		break;
+	}
+	case CharacterState::Shoot:
+	{
+		std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
+
+		if (m_BulletCooldown > 0.f)
+		{
+			m_CurrentState = CharacterState::Idle;
+			ApplyGravity(pTransform, deltaTime);
+			break;
+		}
+
+		m_BulletCooldown = 0.5f;
+
+		//Spawn a bubble
+		auto pBubble{ std::make_shared<Engine::GameObject>() };
+
+		bool isMovingLeft{};
+		if (m_OldState == CharacterState::MoveLeft)
+			isMovingLeft = true;
+		else
+			isMovingLeft = false;
+
+		pBubble->SetPosition(pTransform->GetPosition().x, pTransform->GetPosition().y);
+		pBubble->AddComponent(std::make_shared<Engine::BubbleComponent>(pBubble, isMovingLeft, 32, 32, true));
+		m_Bubbles.push_back(pBubble);
+		m_pOwner.lock()->AddChild(pBubble);
+
+		ApplyGravity(pTransform, deltaTime);
+		break;
 	}
 	default:
 		break;
 	}
-
-	//
+	
 	if (IsIntersectingWithEnemies() && m_InvincibilityTime <= 0.f)
 	{
 		m_Lives -= 1;
@@ -143,6 +178,33 @@ void Engine::CharacterControllerComponent::ApplyGravity(std::shared_ptr<Transfor
 	transform->SetPosition(transform->GetPosition().x, y, transform->GetPosition().z);
 }
 
+void Engine::CharacterControllerComponent::UpdateBubbles()
+{
+	for (size_t i = 0; i < m_Enemies->size(); i++)
+	{
+		auto iterator = m_Bubbles.begin();
+
+		while (iterator != m_Bubbles.end())
+		{
+			float remainingLifeTime{ (*iterator)->GetComponent<BubbleComponent>()->GetRemainingLifeTime() };
+			Rect bubble{ (*iterator)->GetComponent<BubbleComponent>()->GetRect() };
+			if (remainingLifeTime < 0.f)
+			{
+				m_pOwner.lock()->RemoveChild(*iterator);
+				iterator = m_Bubbles.erase(iterator);
+			}
+			else if ((*m_Enemies)[i]->IsIntersecting(bubble))
+			{
+				(*m_Enemies)[i]->Trap();
+				m_pOwner.lock()->RemoveChild(*iterator);
+				iterator = m_Bubbles.erase(iterator);
+			}
+			else
+				iterator++;
+		}
+	}
+}
+
 bool Engine::CharacterControllerComponent::IsIntersecting(int x, int y)
 {
 	Rect characterRect{ x, y, m_Width, m_Height };
@@ -162,10 +224,27 @@ bool Engine::CharacterControllerComponent::IsIntersectingWithEnemies()
 	std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
 	Rect characterRect{ (int)pTransform->GetPosition().x, (int)pTransform->GetPosition().y, m_Width, m_Height };
 
-	for (size_t i = 0; i < m_Enemies.size(); i++)
+	auto iterator = m_Enemies->begin();
+
+	while (iterator != m_Enemies->end())
 	{
-		if (m_Enemies[i]->IsIntersecting(characterRect))
+		if ((*iterator)->IsIntersecting(characterRect))
+		{
+			if ((*iterator)->IsFrozen())
+			{
+				auto component = *iterator;
+				auto owner = (*iterator)->GetOwner();
+				iterator = m_Enemies->erase(iterator);
+				owner.lock()->RemoveComponent(component);
+				owner.lock()->RemoveComponent(owner.lock()->GetComponent<RenderComponent>());
+
+				//Enemy Deleted!
+			}
+
 			return true;
+		}
+		else
+			iterator++;
 	}
 
 	return false;
