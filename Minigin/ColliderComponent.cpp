@@ -2,10 +2,11 @@
 #include "ColliderComponent.h"
 #include "GameObject.h"
 
-Engine::ColliderComponent::ColliderComponent(const std::shared_ptr<GameObject>& owner, int width, int height)
+Engine::ColliderComponent::ColliderComponent(const std::shared_ptr<GameObject>& owner, int width, int height, bool deactivateBottom)
 	: BaseComponent(owner)
 	, m_Width{ width }
 	, m_Height{ height }
+	, m_DeactivateBottom{ deactivateBottom }
 {
 
 }
@@ -23,7 +24,7 @@ void Engine::ColliderComponent::Render()
 {
 }
 
-bool Engine::ColliderComponent::IsIntersecting(Rect& other)
+bool Engine::ColliderComponent::IsIntersecting(Rect& other, float velocityY)
 {
 	auto transform = m_pOwner.lock()->GetTransform()->GetPosition();
 	Rect collider{ (int)transform.x, (int)transform.y, m_Width, m_Height };
@@ -33,15 +34,11 @@ bool Engine::ColliderComponent::IsIntersecting(Rect& other)
 		collider.y < (other.y + other.height) &&
 		(collider.y + collider.height) > other.y;
 
-	if (isIntersecting)
+	//Allow the player to jump through platforms
+	if (m_DeactivateBottom)
 	{
-		//fix position after intersection
-		if (collider.x > (other.x + other.width))
-			other.x = collider.x - other.width;
-		if ((collider.x + collider.width) < other.x)
-			other.x = collider.x + collider.width;
-		if (collider.y > (other.y + other.height))
-			other.y = collider.y - other.height;
+		if (velocityY < 0.f)
+			isIntersecting = false;
 	}
 
 	return isIntersecting;

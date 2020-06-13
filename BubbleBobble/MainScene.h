@@ -4,6 +4,7 @@
 namespace Engine
 {
 	class ColliderComponent;
+	class EnemyControllerComponent;
 }
 
 class MainScene final : public Engine::Scene
@@ -16,7 +17,9 @@ public:
 private:
 	int m_WindowScale;
 	std::vector<std::shared_ptr<Engine::ColliderComponent>> m_LevelColliders{};
+	std::vector<std::shared_ptr<Engine::EnemyControllerComponent>> m_Enemies{};
 
+	void AddEnemies();
 	void WriteLevel01File();
 	void AddLevel01Layout();
 	void AddLevelCollision();

@@ -6,14 +6,17 @@
 #include <memory>
 #include <algorithm>
 #include "ColliderComponent.h"
+#include "EnemyControllerComponent.h"
 
 using namespace Engine;
 
 Engine::CharacterControllerComponent::CharacterControllerComponent(const std::shared_ptr<GameObject>& owner, int playerID,
-	std::vector<std::shared_ptr<ColliderComponent>> levelCollision, int width, int height)
+	std::vector<std::shared_ptr<ColliderComponent>> levelCollision, std::vector<std::shared_ptr<EnemyControllerComponent>> enemies,
+	int width, int height)
 	: BaseComponent(owner)
 	, m_PlayerID{ playerID }
 	, m_LevelCollision{ levelCollision }
+	, m_Enemies{ enemies }
 	, m_Width{ width }
 	, m_Height{ height }
 {
@@ -37,6 +40,8 @@ void Engine::CharacterControllerComponent::Update(float deltaTime)
 	HandleInput();
 	if (m_JumpCooldown >= 0.f)
 		m_JumpCooldown -= deltaTime;
+	if (m_InvincibilityTime >= 0.f)
+		m_InvincibilityTime -= deltaTime;
 
 	switch (m_CurrentState)
 	{
@@ -53,7 +58,6 @@ void Engine::CharacterControllerComponent::Update(float deltaTime)
 	case CharacterState::Idle:
 	{
 		std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
-		//Collision Check
 		ApplyGravity(pTransform, deltaTime);
 		break;
 	}
@@ -74,6 +78,16 @@ void Engine::CharacterControllerComponent::Update(float deltaTime)
 	}
 	default:
 		break;
+	}
+
+	//
+	if (IsIntersectingWithEnemies() && m_InvincibilityTime <= 0.f)
+	{
+		m_Lives -= 1;
+		m_InvincibilityTime = 5.f;
+
+		//if (m_Lives < 0)
+			//Change Scene
 	}
 
 	m_OldState = m_CurrentState;
@@ -110,7 +124,7 @@ void Engine::CharacterControllerComponent::HandleMovement(bool isMovingLeft, flo
 
 	ApplyGravity(pTransform, deltaTime);
 	//Collision Check
-	if (IsIntersecting((int)x, (int)pTransform->GetPosition().y))	//break if the next move would intersect with something
+	if (IsIntersecting((int)x, (int)pTransform->GetPosition().y))	//return if the next move would intersect with something
 		return;
 
 	pTransform->SetPosition(x, pTransform->GetPosition().y, pTransform->GetPosition().z);
@@ -131,17 +145,30 @@ void Engine::CharacterControllerComponent::ApplyGravity(std::shared_ptr<Transfor
 
 bool Engine::CharacterControllerComponent::IsIntersecting(int x, int y)
 {
-	std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
 	Rect characterRect{ x, y, m_Width, m_Height };
 	bool isIntersecting{ false };
 
 	for (size_t i = 0; i < m_LevelCollision.size(); i++)
 	{
-		if (m_LevelCollision[i]->IsIntersecting(characterRect))
+		if (m_LevelCollision[i]->IsIntersecting(characterRect, m_Velocity.y))
 			isIntersecting = true;
 	}
 
 	return isIntersecting;
+}
+
+bool Engine::CharacterControllerComponent::IsIntersectingWithEnemies()
+{
+	std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
+	Rect characterRect{ (int)pTransform->GetPosition().x, (int)pTransform->GetPosition().y, m_Width, m_Height };
+
+	for (size_t i = 0; i < m_Enemies.size(); i++)
+	{
+		if (m_Enemies[i]->IsIntersecting(characterRect))
+			return true;
+	}
+
+	return false;
 }
 
 bool Engine::CharacterControllerComponent::IsTouchingGround()

@@ -200,6 +200,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClInclude Include="CharacterControllerComponent.h" />
     <ClInclude Include="ColliderComponent.h" />
     <ClInclude Include="Commands.h" />
+    <ClInclude Include="EnemyControllerComponent.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FPSCounterComponent.h" />
     <ClInclude Include="FVector2.h" />
@@ -216,7 +217,6 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Singleton.h" />
-    <ClInclude Include="SVGParser.h" />
     <ClInclude Include="TextComponent.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="Transform.h" />
@@ -225,6 +225,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClCompile Include="BaseComponent.cpp" />
     <ClCompile Include="CharacterControllerComponent.cpp" />
     <ClCompile Include="ColliderComponent.cpp" />
+    <ClCompile Include="EnemyControllerComponent.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FPSCounterComponent.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -243,7 +244,6 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="SVGParser.cpp" />
     <ClCompile Include="TextComponent.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="Transform.cpp" />

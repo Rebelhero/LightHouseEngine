@@ -10,6 +10,7 @@ class Command;
 namespace Engine
 {
 	class ColliderComponent;
+	class EnemyControllerComponent;
 
 	enum class CharacterState
 	{
@@ -24,7 +25,8 @@ namespace Engine
 	{
 	public:
 		CharacterControllerComponent(const std::shared_ptr<GameObject>& owner, int playerID,
-			std::vector<std::shared_ptr<ColliderComponent>> levelCollision, int width, int height);
+			std::vector<std::shared_ptr<ColliderComponent>> levelCollision,
+			std::vector<std::shared_ptr<EnemyControllerComponent>> enemies, int width, int height);
 		void Start() override;
 		void Update(float deltaTime) override;
 		void Render() override;
@@ -38,6 +40,7 @@ namespace Engine
 		int m_PlayerID{};
 		std::vector<std::unique_ptr<Command>> m_Commands{};
 		std::vector<std::shared_ptr<ColliderComponent>> m_LevelCollision{};
+		std::vector<std::shared_ptr<EnemyControllerComponent>> m_Enemies{};
 		CharacterState m_OldState{};
 		CharacterState m_CurrentState{};
 		float m_Speed{ 100.f };
@@ -46,11 +49,14 @@ namespace Engine
 		int m_Width{};
 		int m_Height{};
 		float m_JumpCooldown{ 0.f };
+		int m_Lives{ 4 };
+		float m_InvincibilityTime{ 0.f };
 
 		void HandleInput();
 		void HandleMovement(bool isMovingLeft, float deltaTime);
 		void ApplyGravity(std::shared_ptr<Transform> transform, float deltaTime);
 		bool IsIntersecting(int x, int y);
+		bool IsIntersectingWithEnemies();
 		bool IsTouchingGround();
 
 	};
