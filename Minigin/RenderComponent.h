@@ -25,7 +25,7 @@ namespace Engine
 		RenderComponent& operator= (const RenderComponent&&) = delete;
 
 	private:
-		const Transform& m_Transform;
+		std::shared_ptr<Transform> m_pTransform;
 		std::shared_ptr<Texture2D> m_Texture;
 		Rect m_SrcRect;
 		int m_OffsetX;

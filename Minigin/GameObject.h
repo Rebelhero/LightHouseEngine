@@ -16,10 +16,10 @@ namespace Engine
 		void SetPosition(float x, float y);
 		void AddComponent(const std::shared_ptr<BaseComponent>& component);
 		template<class T> std::shared_ptr<T> GetComponent();
-		const Transform& GetTransform();
+		const std::shared_ptr<Transform> GetTransform();
 
 
-		GameObject() = default;
+		GameObject();
 		virtual ~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
@@ -27,7 +27,7 @@ namespace Engine
 		GameObject& operator=(GameObject&& other) = delete;
 
 	private:
-		Transform m_Transform;
+		std::shared_ptr<Transform> m_pTransform{};
 		std::vector<std::shared_ptr<BaseComponent>> m_Components{};
 	};
 

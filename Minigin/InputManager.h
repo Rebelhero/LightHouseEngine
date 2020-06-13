@@ -20,8 +20,8 @@ namespace Engine
 	{
 	public:
 		bool ProcessInput();
-		bool IsPressed(short playerID, ControllerButton button) const;
-		bool IsPressed(short playerID, DWORD key) const;
+		bool IsPressed(int playerID, ControllerButton button) const;
+		bool IsPressed(int playerID, DWORD key) const;
 	private:
 		XINPUT_STATE m_Player1State{};
 		XINPUT_STATE m_Player2State{};

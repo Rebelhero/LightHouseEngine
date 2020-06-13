@@ -9,6 +9,7 @@
 #include "LevelParser.h"
 #include "SVGParser.h"
 #include "CharacterControllerComponent.h"
+#include "ColliderComponent.h"
 
 MainScene::MainScene(const std::string& name, int windowScale)
 	: Scene(name)
@@ -36,24 +37,33 @@ void MainScene::Start()
 	//go->SetPosition(80, 20);
 	//Add(go);
 
-	//go = std::make_shared<Engine::GameObject>();
-	//auto newFont = Engine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
-	//go->AddComponent(std::make_shared<Engine::FPSCounterComponent>(go, newFont));
-	//go->SetPosition(20, 30);
-	//Add(go);
-
-	go = std::make_shared<Engine::GameObject>();
-	auto characterController = std::make_shared<Engine::CharacterControllerComponent>(go, 0);
-	go->AddComponent(characterController);
-	go->SetPosition(20, 30);
-	Add(go);
 
 	//WriteLevel01File();
 	AddLevel01Layout();
+	AddLevelCollision();
 	std::vector<std::vector<FVector2>> svgVertices{};
 	//Careful, old parser from Programming 2
 	SVGParser svgParser{};
 	svgParser.GetVerticesFromSvgFile("../Data/Levels/level01.svg", svgVertices);
+
+
+	go = std::make_shared<Engine::GameObject>();
+	int playerDimension{ 16 };	//pixel size of the sprite
+	int playerScaled{ playerDimension * m_WindowScale };
+	Rect rect{ 0, 0, playerDimension, playerDimension };
+	auto playerSprite = std::make_shared<Engine::RenderComponent>(go, "../Data/sprites0.png", rect, 0, 0, playerScaled, playerScaled);
+	go->AddComponent(playerSprite);
+
+	auto characterController = std::make_shared<Engine::CharacterControllerComponent>(go, 0, m_LevelColliders, playerScaled, playerScaled);
+	go->AddComponent(characterController);
+	go->SetPosition(100, 410);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	auto newFont = Engine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
+	go->AddComponent(std::make_shared<Engine::FPSCounterComponent>(go, newFont));
+	go->SetPosition(20, 30);
+	Add(go);
 
 	//Base Start for every added component
 	Scene::Start();
@@ -221,4 +231,98 @@ void MainScene::AddLevel01Layout()
 	}
 
 	Add(levelLayoutGO);
+}
+
+void MainScene::AddLevelCollision()
+{
+	auto go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(64, 448);
+	auto collision{ std::make_shared<Engine::ColliderComponent>(go, 512, 16) };
+	go->AddComponent(collision);
+	m_LevelColliders.push_back(collision);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(64, 32);
+	collision = std::make_shared<Engine::ColliderComponent>(go, 512, 16);
+	go->AddComponent(collision);
+	m_LevelColliders.push_back(collision);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(32, 32);
+	collision = std::make_shared<Engine::ColliderComponent>(go, 32, 432);
+	go->AddComponent(collision);
+	m_LevelColliders.push_back(collision);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(576, 32);
+	collision = std::make_shared<Engine::ColliderComponent>(go, 32, 432);
+	go->AddComponent(collision);
+	m_LevelColliders.push_back(collision);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(64, 352);
+	collision = std::make_shared<Engine::ColliderComponent>(go, 32, 16);
+	go->AddComponent(collision);
+	m_LevelColliders.push_back(collision);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(64, 256);
+	collision = std::make_shared<Engine::ColliderComponent>(go, 32, 16);
+	go->AddComponent(collision);
+	m_LevelColliders.push_back(collision);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(64, 160);
+	collision = std::make_shared<Engine::ColliderComponent>(go, 32, 16);
+	go->AddComponent(collision);
+	m_LevelColliders.push_back(collision);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(544, 352);
+	collision = std::make_shared<Engine::ColliderComponent>(go, 32, 16);
+	go->AddComponent(collision);
+	m_LevelColliders.push_back(collision);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(544, 256);
+	collision = std::make_shared<Engine::ColliderComponent>(go, 32, 16);
+	go->AddComponent(collision);
+	m_LevelColliders.push_back(collision);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(544, 160);
+	collision = std::make_shared<Engine::ColliderComponent>(go, 32, 16);
+	go->AddComponent(collision);
+	m_LevelColliders.push_back(collision);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(160, 160);
+	collision = std::make_shared<Engine::ColliderComponent>(go, 320, 16);
+	go->AddComponent(collision);
+	m_LevelColliders.push_back(collision);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(160, 256);
+	collision = std::make_shared<Engine::ColliderComponent>(go, 320, 16);
+	go->AddComponent(collision);
+	m_LevelColliders.push_back(collision);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(160, 352);
+	collision = std::make_shared<Engine::ColliderComponent>(go, 320, 16);
+	go->AddComponent(collision);
+	m_LevelColliders.push_back(collision);
+	Add(go);
 }

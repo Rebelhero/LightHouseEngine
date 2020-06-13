@@ -11,7 +11,7 @@
 
 Engine::TextComponent::TextComponent(const std::shared_ptr<GameObject>& owner, const std::string& text, const std::shared_ptr<Font>& font)
 	: BaseComponent(owner)
-	, m_Transform{ m_pOwner.lock()->GetTransform() }
+	, m_pTransform{ m_pOwner.lock()->GetTransform() }
 	, m_NeedsUpdate(true)
 	, m_Text(text)
 	, m_Font(font)
@@ -50,7 +50,7 @@ void Engine::TextComponent::Render()
 {
 	if (m_Texture != nullptr)
 	{
-		const auto pos = m_Transform.GetPosition();
+		const auto pos = m_pTransform->GetPosition();
 		Renderer::GetInstance().RenderTexture(*m_Texture, pos.x, pos.y);
 	}
 }

@@ -3,12 +3,13 @@
 #include "ResourceManager.h"
 #include "Renderer.h"
 
+Engine::GameObject::GameObject()
+	: m_pTransform{std::make_shared<Transform>()}
+{
+}
+
 Engine::GameObject::~GameObject()
 {
-	//for (m_Components.size())
-	//{
-
-	//}
 }
 
 void Engine::GameObject::Start()
@@ -31,7 +32,7 @@ void Engine::GameObject::Render() const
 
 void Engine::GameObject::SetPosition(float x, float y)
 {
-	m_Transform.SetPosition(x, y, 0.0f);
+	m_pTransform->SetPosition(x, y, 0.0f);
 }
 
 void Engine::GameObject::AddComponent(const std::shared_ptr<BaseComponent>& component)
@@ -39,7 +40,7 @@ void Engine::GameObject::AddComponent(const std::shared_ptr<BaseComponent>& comp
 	m_Components.push_back(component);
 }
 
-const Engine::Transform& Engine::GameObject::GetTransform()
+const std::shared_ptr<Engine::Transform> Engine::GameObject::GetTransform()
 {
-	return m_Transform;
+	return m_pTransform;
 }

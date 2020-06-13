@@ -27,7 +27,7 @@ bool Engine::InputManager::ProcessInput()
 	return true;
 }
 
-bool Engine::InputManager::IsPressed(short playerID, ControllerButton button) const
+bool Engine::InputManager::IsPressed(int playerID, ControllerButton button) const
 {
 	//which of the two players are we processing right now?
 	XINPUT_STATE m_CurrentState = (playerID == 0) ? m_Player1State : m_Player2State;
@@ -53,13 +53,9 @@ bool Engine::InputManager::IsPressed(short playerID, ControllerButton button) co
 		return m_CurrentState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT;
 	default: return false;
 	}
-
-	//Keyboard Input
-	if (GetKeyState(VK_UP) & m_KeyboardPressed)
-		std::cout << "success" << "\n";
 }
 
-bool Engine::InputManager::IsPressed(short playerID, DWORD key) const
+bool Engine::InputManager::IsPressed(int playerID, DWORD key) const
 {
 	//Keyboard Input
 	return GetKeyState(key) & m_KeyboardPressed;

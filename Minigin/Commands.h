@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "InputManager.h"
+#include "CharacterControllerComponent.h"
 
 class Command
 {
@@ -12,7 +13,7 @@ public:
 	virtual ~Command() {};
 	virtual Engine::ControllerButton GetButton() { return m_ControllerButton; };
 	virtual DWORD GetKey() { return m_KeyboardKey; };
-	virtual void execute(float deltaTime) = 0;
+	virtual void execute(Engine::CharacterState& state) = 0;
 
 protected:
 	Engine::ControllerButton m_ControllerButton;
@@ -23,9 +24,9 @@ class MoveLeftCommand : public Command
 {
 public:
 	MoveLeftCommand(Engine::ControllerButton button, DWORD key) : Command(button, key) {};
-	virtual void execute(float deltaTime) override
+	virtual void execute(Engine::CharacterState& state) override
 	{
-		std::cout << "MoveLeftCommand" << "\n";
+		state = Engine::CharacterState::MoveLeft;
 	}
 };
 
@@ -33,9 +34,9 @@ class MoveRightCommand : public Command
 {
 public:
 	MoveRightCommand(Engine::ControllerButton button, DWORD key) : Command(button, key) {};
-	virtual void execute(float deltaTime) override
+	virtual void execute(Engine::CharacterState& state) override
 	{
-		std::cout << "MoveRightCommand" << "\n";
+		state = Engine::CharacterState::MoveRight;
 	}
 };
 
@@ -43,8 +44,19 @@ class JumpCommand : public Command
 {
 public:
 	JumpCommand(Engine::ControllerButton button, DWORD key) : Command(button, key) {};
-	virtual void execute(float deltaTime) override
+	virtual void execute(Engine::CharacterState& state) override
 	{
-		std::cout << "JumpCommand" << "\n";
+			state = Engine::CharacterState::Jump;
+	}
+};
+
+class ShootCommand : public Command
+{
+public:
+	ShootCommand(Engine::ControllerButton button, DWORD key) : Command(button, key) {};
+	virtual void execute(Engine::CharacterState& state) override
+	{
+		state = Engine::CharacterState::Shoot;
+		std::cout << "ShootCommand" << "\n";
 	}
 };

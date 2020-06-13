@@ -24,7 +24,7 @@ namespace Engine
 	private:
 		bool m_NeedsUpdate;
 		std::string m_Text;
-		const Transform& m_Transform;
+		std::shared_ptr<Transform> m_pTransform;
 		std::shared_ptr<Font> m_Font;
 		std::shared_ptr<Texture2D> m_Texture;
 	};
