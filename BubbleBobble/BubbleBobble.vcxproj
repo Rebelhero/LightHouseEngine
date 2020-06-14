@@ -164,10 +164,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BubbleBobble.cpp" />
+    <ClCompile Include="Level02Coop.cpp" />
+    <ClCompile Include="Level02Single.cpp" />
+    <ClCompile Include="Level03Coop.cpp" />
+    <ClCompile Include="Level03Single.cpp" />
     <ClCompile Include="LevelParser.cpp" />
     <ClCompile Include="LevelWriter.cpp" />
     <ClCompile Include="MainGame.cpp" />
     <ClCompile Include="MainScene.cpp" />
+    <ClCompile Include="MainSceneCoop.cpp" />
+    <ClCompile Include="MenuScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Minigin\Minigin.vcxproj">
@@ -176,10 +182,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
+    <ClInclude Include="Level02Coop.h" />
+    <ClInclude Include="Level02Single.h" />
+    <ClInclude Include="Level03Coop.h" />
+    <ClInclude Include="Level03Single.h" />
     <ClInclude Include="LevelParser.h" />
     <ClInclude Include="LevelWriter.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="MainScene.h" />
+    <ClInclude Include="MainSceneCoop.h" />
+    <ClInclude Include="MenuScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

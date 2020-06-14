@@ -212,6 +212,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClInclude Include="LightHouse.h" />
     <ClInclude Include="LightHousePCH.h" />
     <ClInclude Include="MaitaControllerComponent.h" />
+    <ClInclude Include="MenuSelectComponent.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="RenderComponent.h" />
     <ClInclude Include="SceneObject.h" />
@@ -246,6 +247,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">LightHousePCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="MaitaControllerComponent.cpp" />
+    <ClCompile Include="MenuSelectComponent.cpp" />
     <ClCompile Include="RenderComponent.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ResourceManager.cpp" />

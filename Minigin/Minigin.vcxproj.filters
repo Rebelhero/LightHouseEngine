@@ -105,6 +105,9 @@
     <ClInclude Include="SoundComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MenuSelectComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -172,6 +175,9 @@
     </ClCompile>
     <ClCompile Include="SoundComponent.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuSelectComponent.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

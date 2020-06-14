@@ -9,15 +9,17 @@
 #include "EnemyControllerComponent.h"
 #include "BubbleComponent.h"
 #include "BoulderComponent.h"
+#include "SceneManager.h"
 
 using namespace Engine;
 
-Engine::CharacterControllerComponent::CharacterControllerComponent(const std::shared_ptr<GameObject>& owner, int playerID, int width, int height,
+Engine::CharacterControllerComponent::CharacterControllerComponent(const std::shared_ptr<GameObject>& owner, int playerID, int playerCount, int width, int height,
 	std::vector<std::shared_ptr<ColliderComponent>> levelCollision,
 	std::shared_ptr<std::vector<std::shared_ptr<EnemyControllerComponent>>> enemies,
 	std::shared_ptr<std::vector<std::shared_ptr<GameObject>>> boulders)
 	: BaseComponent(owner)
 	, m_PlayerID{ playerID }
+	, m_PlayerCount{ playerCount }
 	, m_LevelCollision{ levelCollision }
 	, m_Enemies{ enemies }
 	, m_Boulders{ boulders }
@@ -25,10 +27,10 @@ Engine::CharacterControllerComponent::CharacterControllerComponent(const std::sh
 	, m_Height{ height }
 {
 	//Set up buttons for the different commands
-	m_Commands.push_back(std::make_unique<MoveRightCommand>(Engine::ControllerButton::DPadRight, NULL));
-	m_Commands.push_back(std::make_unique<MoveLeftCommand>(Engine::ControllerButton::DPadLeft, NULL));
-	m_Commands.push_back(std::make_unique<JumpCommand>(Engine::ControllerButton::ButtonA, NULL));
-	m_Commands.push_back(std::make_unique<ShootCommand>(Engine::ControllerButton::ButtonB, NULL));
+	m_Commands.push_back(std::make_unique<MoveRightCommand>(Engine::ControllerButton::DPadRight, VK_RIGHT));
+	m_Commands.push_back(std::make_unique<MoveLeftCommand>(Engine::ControllerButton::DPadLeft, VK_LEFT));
+	m_Commands.push_back(std::make_unique<JumpCommand>(Engine::ControllerButton::ButtonA, (DWORD)0x41 ));	//0x41 = "A"-Key
+	m_Commands.push_back(std::make_unique<ShootCommand>(Engine::ControllerButton::ButtonB, (DWORD)0x42 ));	//0x41 = "B"-Key
 
 	m_CurrentState = CharacterState::Idle;
 	m_OldState = m_CurrentState;
@@ -44,6 +46,8 @@ void Engine::CharacterControllerComponent::Start()
 
 void Engine::CharacterControllerComponent::Update(float deltaTime)
 {
+	std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
+
 	HandleInput();
 	if (m_JumpCooldown >= 0.f)
 		m_JumpCooldown -= deltaTime;
@@ -52,8 +56,12 @@ void Engine::CharacterControllerComponent::Update(float deltaTime)
 	if (m_BulletCooldown >= 0.f)
 		m_BulletCooldown -= deltaTime;
 
+	if (pTransform->GetPosition().y > 450.f)
+		pTransform->SetPosition(pTransform->GetPosition().x, 30.f, pTransform->GetPosition().z);
+
 	UpdateBubbles();
 	CheckBoulderCollision();
+	CheckEnemies();
 
 	switch (m_CurrentState)
 	{
@@ -69,14 +77,11 @@ void Engine::CharacterControllerComponent::Update(float deltaTime)
 	}
 	case CharacterState::Idle:
 	{
-		std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
 		ApplyGravity(pTransform, deltaTime);
 		break;
 	}
 	case CharacterState::Jump:
 	{
-		std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
-
 		if (m_JumpCooldown > 0.f || !IsTouchingGround())
 		{
 			m_CurrentState = CharacterState::Idle;
@@ -91,8 +96,6 @@ void Engine::CharacterControllerComponent::Update(float deltaTime)
 	}
 	case CharacterState::Shoot:
 	{
-		std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
-
 		if (m_BulletCooldown > 0.f)
 		{
 			m_CurrentState = CharacterState::Idle;
@@ -129,11 +132,10 @@ void Engine::CharacterControllerComponent::Update(float deltaTime)
 		m_Lives -= 1;
 		m_InvincibilityTime = 5.f;
 
-		std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
 		m_pOwner.lock()->SetPosition(m_SpawnLocation.x, m_SpawnLocation.y);
 
-		//if (m_Lives < 0)
-			//Change Scene
+		if (m_Lives < 0)
+			Engine::SceneManager::GetInstance().ChangeCurrentScene("MenuScene");
 	}
 
 	m_OldState = m_CurrentState;
@@ -228,11 +230,27 @@ void Engine::CharacterControllerComponent::CheckBoulderCollision()
 		if ((*iterator)->GetComponent<BoulderComponent>()->IsIntersecting(player, m_Velocity.y))
 		{
 			m_GotHit = true;
+			(*iterator)->RemoveComponent((*iterator)->GetComponent<RenderComponent>());
 			iterator = m_Boulders->erase(iterator);
 		}
 		else
 			iterator++;
 	}
+}
+
+void Engine::CharacterControllerComponent::CheckEnemies()
+{
+	//Hacky scene transitions, I'm sorry
+	if (m_Enemies->empty())
+	{
+		//auto sceneName = Engine::SceneManager::GetInstance().GetCurrentScene();	//results in bad_alloc, don't know how to fix
+
+		if (m_PlayerCount == 1)
+			Engine::SceneManager::GetInstance().ChangeCurrentScene("Level02Single");
+		else if (m_PlayerCount == 2)
+				Engine::SceneManager::GetInstance().ChangeCurrentScene("Level03Coop");
+	}
+
 }
 
 bool Engine::CharacterControllerComponent::IsIntersecting(int x, int y)

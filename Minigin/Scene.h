@@ -20,7 +20,7 @@ namespace Engine
 		virtual void Render() const;
 
 		void Add(const std::shared_ptr<SceneObject>& object);
-		std::string GetName() const;
+		std::string GetName();
 
 	protected:
 		std::string m_Name;

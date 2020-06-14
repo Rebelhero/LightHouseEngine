@@ -13,12 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="SceneFiles">
+      <UniqueIdentifier>{a6ed685d-2505-4e8e-9b79-d8b26ce0d512}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BubbleBobble.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MainScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MainGame.cpp">
@@ -30,11 +30,29 @@
     <ClCompile Include="LevelWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Level02Coop.cpp">
+      <Filter>SceneFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="Level02Single.cpp">
+      <Filter>SceneFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="Level03Coop.cpp">
+      <Filter>SceneFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="Level03Single.cpp">
+      <Filter>SceneFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MainScene.cpp">
+      <Filter>SceneFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MainSceneCoop.cpp">
+      <Filter>SceneFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuScene.cpp">
+      <Filter>SceneFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MainScene.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="MainGame.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -46,6 +64,27 @@
     </ClInclude>
     <ClInclude Include="LevelWriter.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Level02Coop.h">
+      <Filter>SceneFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="Level02Single.h">
+      <Filter>SceneFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="Level03Coop.h">
+      <Filter>SceneFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="Level03Single.h">
+      <Filter>SceneFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MainScene.h">
+      <Filter>SceneFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MainSceneCoop.h">
+      <Filter>SceneFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuScene.h">
+      <Filter>SceneFiles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

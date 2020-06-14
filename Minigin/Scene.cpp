@@ -33,7 +33,7 @@ void Scene::Render() const
 		object->Render();
 }
 
-std::string Engine::Scene::GetName() const
+std::string Engine::Scene::GetName()
 {
 	return m_Name;
 }

@@ -1,5 +1,5 @@
 #include "LightHousePCH.h"
-#include "MainScene.h"
+#include "Level02Single.h"
 #include "GameObject.h"
 #include "ResourceManager.h"
 #include "TextComponent.h"
@@ -13,7 +13,7 @@
 #include "ColliderComponent.h"
 #include "BoulderComponent.h"
 
-MainScene::MainScene(const std::string& name, int windowScale)
+Level02Single::Level02Single(const std::string& name, int windowScale)
 	: Scene(name)
 	, m_WindowScale{ windowScale }
 	, m_Enemies{ std::make_shared<std::vector<std::shared_ptr<Engine::EnemyControllerComponent>>>() }
@@ -21,7 +21,7 @@ MainScene::MainScene(const std::string& name, int windowScale)
 {
 }
 
-void MainScene::Start()
+void Level02Single::Start()
 {
 	auto go = std::make_shared<Engine::GameObject>();
 	auto texture = Engine::ResourceManager::GetInstance().LoadTexture("background.jpg");
@@ -29,8 +29,8 @@ void MainScene::Start()
 	go->AddComponent(std::move(background));
 	Add(go);
 
-	//WriteLevel01File();
-	AddLevel01Layout();
+	//WriteLevel02File();
+	AddLevel02Layout();
 	AddLevelCollision();
 	AddEnemies();
 
@@ -58,7 +58,7 @@ void MainScene::Start()
 	Scene::Start();
 }
 
-void MainScene::AddEnemies()
+void Level02Single::AddEnemies()
 {
 	auto go = std::make_shared<Engine::GameObject>();
 	int enemyDimension{ 16 };	//pixel size of the sprite
@@ -83,15 +83,6 @@ void MainScene::AddEnemies()
 	go->SetPosition(350, 110);
 	Add(go);
 
-	go = std::make_shared<Engine::GameObject>();
-	playerSprite = std::make_shared<Engine::RenderComponent>(go, texture, rect, 0, 0, enemyScaled, enemyScaled);
-	go->AddComponent(playerSprite);
-	enemyController = std::make_shared<Engine::EnemyControllerComponent>(go, m_LevelColliders, enemyScaled, enemyScaled);
-	go->AddComponent(enemyController);
-	m_Enemies->push_back(enemyController);
-	go->SetPosition(400, 110);
-	Add(go);
-
 	rect = Rect(0, 240, enemyDimension, enemyDimension);
 	go = std::make_shared<Engine::GameObject>();
 	playerSprite = std::make_shared<Engine::RenderComponent>(go, texture, rect, 0, 0, enemyScaled, enemyScaled);
@@ -101,21 +92,36 @@ void MainScene::AddEnemies()
 	m_Enemies->push_back(enemyController);
 	go->SetPosition(200, 110);
 	Add(go);
+
+	rect = Rect(0, 240, enemyDimension, enemyDimension);
+	go = std::make_shared<Engine::GameObject>();
+	playerSprite = std::make_shared<Engine::RenderComponent>(go, texture, rect, 0, 0, enemyScaled, enemyScaled);
+	go->AddComponent(playerSprite);
+	enemyController = std::make_shared<Engine::MaitaControllerComponent>(go, m_LevelColliders, m_Boulders, enemyScaled, enemyScaled);
+	go->AddComponent(enemyController);
+	m_Enemies->push_back(enemyController);
+	go->SetPosition(400, 110);
+	Add(go);
 }
 
-void MainScene::WriteLevel01File()
+void Level02Single::WriteLevel02File()
 {
 	int blockDimension = 8;	//one block equals 8 pixels on the texture
 	int blockScaled = blockDimension * m_WindowScale;
 
 	std::vector<Block> levelBlocks{};
 	Block block{};
-	block.id = 0;
+	block.id = 1;
 	block.position.x = blockScaled;
 	block.position.y = blockScaled;
 
 	//Upper bound
-	for (int i = 0; i < 36; i++)
+	for (int i = 0; i < 15; i++)
+	{
+		block.position.x = blockScaled + blockDimension * i;
+		levelBlocks.push_back(block);
+	}
+	for (int i = 20; i < 36; i++)
 	{
 		block.position.x = blockScaled + blockDimension * i;
 		levelBlocks.push_back(block);
@@ -124,7 +130,12 @@ void MainScene::WriteLevel01File()
 	block.position.y = blockScaled * 14;
 
 	//Lower bound
-	for (int i = 0; i < 36; i++)
+	for (int i = 0; i < 15; i++)
+	{
+		block.position.x = blockScaled + blockDimension * i;
+		levelBlocks.push_back(block);
+	}
+	for (int i = 20; i < 36; i++)
 	{
 		block.position.x = blockScaled + blockDimension * i;
 		levelBlocks.push_back(block);
@@ -235,14 +246,14 @@ void MainScene::WriteLevel01File()
 		levelBlocks.push_back(block);
 	}
 
-	LevelWriter levelWriter{ levelBlocks, "../Data/Levels/level01.b" };
+	LevelWriter levelWriter{ levelBlocks, "../Data/Levels/level02.b" };
 	levelWriter.WriteLevelFile();
 }
 
-void MainScene::AddLevel01Layout()
+void Level02Single::AddLevel02Layout()
 {
 	std::vector<Block> levelBlocks{};
-	LevelParser levelParser{ "../Data/Levels/level01.b" };
+	LevelParser levelParser{ "../Data/Levels/level02.b" };
 	levelBlocks = levelParser.ReadLevelFile();
 	auto texture = Engine::ResourceManager::GetInstance().LoadTexture("blocks.png");
 
@@ -268,18 +279,32 @@ void MainScene::AddLevel01Layout()
 	Add(levelLayoutGO);
 }
 
-void MainScene::AddLevelCollision()
+void Level02Single::AddLevelCollision()
 {
 	auto go = std::make_shared<Engine::GameObject>();
 	go->SetPosition(64, 448);
-	auto collision{ std::make_shared<Engine::ColliderComponent>(go, 512, 16) };
+	auto collision{ std::make_shared<Engine::ColliderComponent>(go, 208, 16) };
+	go->AddComponent(collision);
+	m_LevelColliders.push_back(collision);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(352, 448);
+	collision = std::make_shared<Engine::ColliderComponent>(go, 224, 16);
 	go->AddComponent(collision);
 	m_LevelColliders.push_back(collision);
 	Add(go);
 
 	go = std::make_shared<Engine::GameObject>();
 	go->SetPosition(64, 32);
-	collision = std::make_shared<Engine::ColliderComponent>(go, 512, 16);
+	collision = std::make_shared<Engine::ColliderComponent>(go, 208, 16);
+	go->AddComponent(collision);
+	m_LevelColliders.push_back(collision);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(352, 32);
+	collision = std::make_shared<Engine::ColliderComponent>(go, 224, 16);
 	go->AddComponent(collision);
 	m_LevelColliders.push_back(collision);
 	Add(go);

@@ -26,7 +26,7 @@ namespace Engine
 	class CharacterControllerComponent : public BaseComponent
 	{
 	public:
-		CharacterControllerComponent(const std::shared_ptr<GameObject>& owner, int playerID, int width, int height,
+		CharacterControllerComponent(const std::shared_ptr<GameObject>& owner, int playerID, int playerCount, int width, int height,
 			std::vector<std::shared_ptr<ColliderComponent>> levelCollision,
 			std::shared_ptr<std::vector<std::shared_ptr<EnemyControllerComponent>>> enemies,
 			std::shared_ptr<std::vector<std::shared_ptr<Engine::GameObject>>> boulders);
@@ -41,6 +41,7 @@ namespace Engine
 
 	private:
 		int m_PlayerID{};
+		int m_PlayerCount{};
 		std::vector<std::unique_ptr<Command>> m_Commands{};
 		std::vector<std::shared_ptr<ColliderComponent>> m_LevelCollision{};
 		std::shared_ptr<std::vector<std::shared_ptr<EnemyControllerComponent>>> m_Enemies{};
@@ -65,6 +66,7 @@ namespace Engine
 		void ApplyGravity(std::shared_ptr<Transform> transform, float deltaTime);
 		void UpdateBubbles();
 		void CheckBoulderCollision();
+		void CheckEnemies();
 		bool IsIntersecting(int x, int y);
 		bool IsIntersectingWithEnemies();
 		bool IsTouchingGround();

@@ -19,8 +19,8 @@ void Engine::SceneManager::Update(float deltaTime)
 
 void Engine::SceneManager::Render()
 {
-	for (const auto& scene : m_Scenes)
-		scene->Render();
+	//for (const auto& scene : m_Scenes)
+		m_pCurrentScene->Render();
 }
 
 Engine::Scene& Engine::SceneManager::CreateScene(const std::string& name)
@@ -44,6 +44,12 @@ void Engine::SceneManager::AddScene(const std::shared_ptr<Scene>& scene)
 		m_pCurrentScene = scene;
 
 	m_Scenes.push_back(scene);
+}
+
+std::string& Engine::SceneManager::GetCurrentScene()
+{
+	std::string name{ m_pCurrentScene->GetName() };
+	return name;
 }
 
 void Engine::SceneManager::ChangeCurrentScene(const std::string& name)

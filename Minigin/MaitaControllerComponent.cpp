@@ -86,6 +86,7 @@ void Engine::MaitaControllerComponent::CheckBoulders()
 		if ((*iterator)->GetComponent<BoulderComponent>()->GetRemainingLifeTime() <= 0.f)
 		{
 			m_pOwner.lock()->RemoveChild((*iterator));
+			(*iterator)->RemoveComponent((*iterator)->GetComponent<RenderComponent>());
 			iterator = m_Boulders->erase(iterator);
 		}
 		else

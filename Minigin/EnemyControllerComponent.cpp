@@ -30,6 +30,10 @@ void Engine::EnemyControllerComponent::Update(float deltaTime)
 	if (m_FreezeTime >= 0.f)
 		m_FreezeTime -= deltaTime;
 
+	std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
+	if (pTransform->GetPosition().y > 450)
+		pTransform->SetPosition(pTransform->GetPosition().x, 30, pTransform->GetPosition().z);
+
 	switch (m_CurrentState)
 	{
 	case EnemyState::MoveRight:
@@ -44,7 +48,6 @@ void Engine::EnemyControllerComponent::Update(float deltaTime)
 	}
 	case EnemyState::Idle:
 	{
-		std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
 		ApplyGravity(pTransform, deltaTime);
 
 		if (m_FreezeTime <= 0.f)
