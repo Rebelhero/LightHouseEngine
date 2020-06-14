@@ -12,6 +12,7 @@
 #include "MaitaControllerComponent.h"
 #include "ColliderComponent.h"
 #include "BoulderComponent.h"
+#include "SoundManager.h"
 
 MainScene::MainScene(const std::string& name, int windowScale)
 	: Scene(name)
@@ -56,6 +57,11 @@ void MainScene::Start()
 
 	//Base Start for every added component
 	Scene::Start();
+
+	//Service Locator for Audio, didn't get finished
+	Engine::SoundManager::RegisterAudioService(nullptr);
+	Engine::SoundManager::GetAudio().StopAll();
+	Engine::SoundManager::GetAudio().Play();
 }
 
 void MainScene::AddEnemies()

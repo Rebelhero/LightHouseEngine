@@ -102,11 +102,14 @@
     <ClInclude Include="BoulderComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="SoundComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MenuSelectComponent.h">
       <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -173,11 +176,14 @@
     <ClCompile Include="BoulderComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="SoundComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MenuSelectComponent.cpp">
       <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
