@@ -17,6 +17,7 @@ Engine::EnemyControllerComponent::EnemyControllerComponent(const std::shared_ptr
 	, m_Height{ height }
 {
 	m_CurrentState = EnemyState::MoveLeft;
+	m_OldState = EnemyState::MoveLeft;
 }
 
 void Engine::EnemyControllerComponent::Start()
@@ -45,6 +46,10 @@ void Engine::EnemyControllerComponent::Update(float deltaTime)
 	{
 		std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
 		ApplyGravity(pTransform, deltaTime);
+
+		if (m_FreezeTime <= 0.f)
+			m_CurrentState = m_OldState;
+
 		break;
 	}
 	default:
@@ -85,6 +90,7 @@ void Engine::EnemyControllerComponent::Trap()
 	if (m_CurrentState == EnemyState::Idle)
 		return;
 
+	m_OldState = m_CurrentState;
 	m_CurrentState = EnemyState::Idle;
 	m_FreezeTime = 5.f;
 }

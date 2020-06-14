@@ -8,16 +8,19 @@
 #include "ColliderComponent.h"
 #include "EnemyControllerComponent.h"
 #include "BubbleComponent.h"
+#include "BoulderComponent.h"
 
 using namespace Engine;
 
-Engine::CharacterControllerComponent::CharacterControllerComponent(const std::shared_ptr<GameObject>& owner, int playerID,
-	std::vector<std::shared_ptr<ColliderComponent>> levelCollision, std::shared_ptr<std::vector<std::shared_ptr<EnemyControllerComponent>>> enemies,
-	int width, int height)
+Engine::CharacterControllerComponent::CharacterControllerComponent(const std::shared_ptr<GameObject>& owner, int playerID, int width, int height,
+	std::vector<std::shared_ptr<ColliderComponent>> levelCollision,
+	std::shared_ptr<std::vector<std::shared_ptr<EnemyControllerComponent>>> enemies,
+	std::shared_ptr<std::vector<std::shared_ptr<GameObject>>> boulders)
 	: BaseComponent(owner)
 	, m_PlayerID{ playerID }
 	, m_LevelCollision{ levelCollision }
 	, m_Enemies{ enemies }
+	, m_Boulders{ boulders }
 	, m_Width{ width }
 	, m_Height{ height }
 {
@@ -29,6 +32,9 @@ Engine::CharacterControllerComponent::CharacterControllerComponent(const std::sh
 
 	m_CurrentState = CharacterState::Idle;
 	m_OldState = m_CurrentState;
+
+	m_SpawnLocation.x = m_pOwner.lock()->GetTransform()->GetPosition().x;
+	m_SpawnLocation.y = m_pOwner.lock()->GetTransform()->GetPosition().y;
 }
 
 void Engine::CharacterControllerComponent::Start()
@@ -47,6 +53,7 @@ void Engine::CharacterControllerComponent::Update(float deltaTime)
 		m_BulletCooldown -= deltaTime;
 
 	UpdateBubbles();
+	CheckBoulderCollision();
 
 	switch (m_CurrentState)
 	{
@@ -115,11 +122,15 @@ void Engine::CharacterControllerComponent::Update(float deltaTime)
 	default:
 		break;
 	}
-	
-	if (IsIntersectingWithEnemies() && m_InvincibilityTime <= 0.f)
+
+	if (IsIntersectingWithEnemies() && m_InvincibilityTime <= 0.f || m_GotHit)
 	{
+		m_GotHit = false;
 		m_Lives -= 1;
 		m_InvincibilityTime = 5.f;
+
+		std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
+		m_pOwner.lock()->SetPosition(m_SpawnLocation.x, m_SpawnLocation.y);
 
 		//if (m_Lives < 0)
 			//Change Scene
@@ -205,6 +216,25 @@ void Engine::CharacterControllerComponent::UpdateBubbles()
 	}
 }
 
+void Engine::CharacterControllerComponent::CheckBoulderCollision()
+{
+	auto iterator = m_Boulders->begin();
+	std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
+	Rect player((int)pTransform->GetPosition().x, (int)pTransform->GetPosition().y, m_Width, m_Height);
+
+	while (iterator != m_Boulders->end())
+	{
+		Rect boulder{ (*iterator)->GetComponent<BoulderComponent>()->GetRect() };
+		if ((*iterator)->GetComponent<BoulderComponent>()->IsIntersecting(player, m_Velocity.y))
+		{
+			m_GotHit = true;
+			iterator = m_Boulders->erase(iterator);
+		}
+		else
+			iterator++;
+	}
+}
+
 bool Engine::CharacterControllerComponent::IsIntersecting(int x, int y)
 {
 	Rect characterRect{ x, y, m_Width, m_Height };
@@ -238,7 +268,8 @@ bool Engine::CharacterControllerComponent::IsIntersectingWithEnemies()
 				owner.lock()->RemoveComponent(component);
 				owner.lock()->RemoveComponent(owner.lock()->GetComponent<RenderComponent>());
 
-				//Enemy Deleted!
+				//Enemy Deleted, so Intersection doesn't count
+				return false;
 			}
 
 			return true;

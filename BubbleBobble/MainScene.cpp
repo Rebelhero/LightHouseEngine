@@ -9,19 +9,23 @@
 #include "LevelParser.h"
 #include "CharacterControllerComponent.h"
 #include "EnemyControllerComponent.h"
+#include "MaitaControllerComponent.h"
 #include "ColliderComponent.h"
+#include "BoulderComponent.h"
 
 MainScene::MainScene(const std::string& name, int windowScale)
 	: Scene(name)
 	, m_WindowScale{ windowScale }
 	, m_Enemies{ std::make_shared<std::vector<std::shared_ptr<Engine::EnemyControllerComponent>>>() }
+	, m_Boulders{ std::make_shared<std::vector<std::shared_ptr<Engine::GameObject>>>() }
 {
 }
 
 void MainScene::Start()
 {
 	auto go = std::make_shared<Engine::GameObject>();
-	auto background = std::make_shared<Engine::RenderComponent>(go, "background.jpg");
+	auto texture = Engine::ResourceManager::GetInstance().LoadTexture("background.jpg");
+	auto background = std::make_shared<Engine::RenderComponent>(go, texture);
 	go->AddComponent(std::move(background));
 	Add(go);
 
@@ -45,24 +49,27 @@ void MainScene::Start()
 	AddEnemies();
 
 	go = std::make_shared<Engine::GameObject>();
+	go->SetPosition(100, 410);
 	int playerDimension{ 16 };	//pixel size of the sprite
 	int playerScaled{ playerDimension * m_WindowScale };
 	Rect rect{ 0, 0, playerDimension, playerDimension };
-	auto playerSprite = std::make_shared<Engine::RenderComponent>(go, "../Data/sprites0.png", rect, 0, 0, playerScaled, playerScaled);
+	texture = Engine::ResourceManager::GetInstance().LoadTexture("sprites0.png");
+	auto playerSprite = std::make_shared<Engine::RenderComponent>(go, texture, rect, 0, 0, playerScaled, playerScaled);
 	go->AddComponent(playerSprite);
 
-	auto characterController = std::make_shared<Engine::CharacterControllerComponent>(go, 0, m_LevelColliders, m_Enemies, playerScaled, playerScaled);
+	auto characterController = std::make_shared<Engine::CharacterControllerComponent>(go, 0, 
+		playerScaled, playerScaled, m_LevelColliders, m_Enemies, m_Boulders);
 	go->AddComponent(characterController);
-	go->SetPosition(100, 410);
 	Add(go);
 
 	//Player2
 	//go = std::make_shared<Engine::GameObject>();
 	//rect = Rect(0, 32, playerDimension, playerDimension);
-	//playerSprite = std::make_shared<Engine::RenderComponent>(go, "../Data/sprites0.png", rect, 0, 0, playerScaled, playerScaled);
+	//playerSprite = std::make_shared<Engine::RenderComponent>(go, texture, rect, 0, 0, playerScaled, playerScaled);
 	//go->AddComponent(playerSprite);
 
-	//auto character2Controller = std::make_shared<Engine::CharacterControllerComponent>(go, 1, m_LevelColliders, m_Enemies, playerScaled, playerScaled);
+	//auto character2Controller = std::make_shared<Engine::CharacterControllerComponent>(go, 1,
+	//	playerScaled, playerScaled, m_LevelColliders, m_Enemies, m_Boulders);
 	//go->AddComponent(character2Controller);
 	//go->SetPosition(200, 410);
 	//Add(go);
@@ -84,13 +91,42 @@ void MainScene::AddEnemies()
 	int enemyDimension{ 16 };	//pixel size of the sprite
 	int enemyScaled{ enemyDimension * m_WindowScale };
 	Rect rect{ 0, 64, enemyDimension, enemyDimension };
-	auto playerSprite = std::make_shared<Engine::RenderComponent>(go, "../Data/sprites0.png", rect, 0, 0, enemyScaled, enemyScaled);
+	auto texture = Engine::ResourceManager::GetInstance().LoadTexture("sprites0.png");
+	auto playerSprite = std::make_shared<Engine::RenderComponent>(go, texture, rect, 0, 0, enemyScaled, enemyScaled);
 	go->AddComponent(playerSprite);
 
 	auto enemyController = std::make_shared<Engine::EnemyControllerComponent>(go, m_LevelColliders, enemyScaled, enemyScaled);
 	go->AddComponent(enemyController);
 	m_Enemies->push_back(enemyController);
 	go->SetPosition(300, 110);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	playerSprite = std::make_shared<Engine::RenderComponent>(go, texture, rect, 0, 0, enemyScaled, enemyScaled);
+	go->AddComponent(playerSprite);
+	enemyController = std::make_shared<Engine::EnemyControllerComponent>(go, m_LevelColliders, enemyScaled, enemyScaled);
+	go->AddComponent(enemyController);
+	m_Enemies->push_back(enemyController);
+	go->SetPosition(350, 110);
+	Add(go);
+
+	go = std::make_shared<Engine::GameObject>();
+	playerSprite = std::make_shared<Engine::RenderComponent>(go, texture, rect, 0, 0, enemyScaled, enemyScaled);
+	go->AddComponent(playerSprite);
+	enemyController = std::make_shared<Engine::EnemyControllerComponent>(go, m_LevelColliders, enemyScaled, enemyScaled);
+	go->AddComponent(enemyController);
+	m_Enemies->push_back(enemyController);
+	go->SetPosition(400, 110);
+	Add(go);
+
+	rect = Rect(0, 240, enemyDimension, enemyDimension);
+	go = std::make_shared<Engine::GameObject>();
+	playerSprite = std::make_shared<Engine::RenderComponent>(go, texture, rect, 0, 0, enemyScaled, enemyScaled);
+	go->AddComponent(playerSprite);
+	enemyController = std::make_shared<Engine::MaitaControllerComponent>(go, m_LevelColliders, m_Boulders, enemyScaled, enemyScaled);
+	go->AddComponent(enemyController);
+	m_Enemies->push_back(enemyController);
+	go->SetPosition(200, 110);
 	Add(go);
 }
 
@@ -235,6 +271,7 @@ void MainScene::AddLevel01Layout()
 	std::vector<Block> levelBlocks{};
 	LevelParser levelParser{ "../Data/Levels/level01.b" };
 	levelBlocks = levelParser.ReadLevelFile();
+	auto texture = Engine::ResourceManager::GetInstance().LoadTexture("blocks.png");
 
 	auto levelLayoutGO = std::make_shared<Engine::GameObject>();
 	levelLayoutGO->SetPosition(0, 0);
@@ -251,7 +288,7 @@ void MainScene::AddLevel01Layout()
 		int positionY{ levelBlocks[i].position.y * m_WindowScale };
 
 		//add render of block with the dimensions that are read from the level file
-		auto block = std::make_shared<Engine::RenderComponent>(levelLayoutGO, "blocks.png", rect, positionX, positionY, blockScaled, blockScaled);
+		auto block = std::make_shared<Engine::RenderComponent>(levelLayoutGO, texture, rect, positionX, positionY, blockScaled, blockScaled);
 		levelLayoutGO->AddComponent(block);
 	}
 

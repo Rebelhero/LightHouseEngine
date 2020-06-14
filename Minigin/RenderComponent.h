@@ -13,7 +13,7 @@ namespace Engine
 	class RenderComponent : public BaseComponent
 	{
 	public:
-		RenderComponent(const std::shared_ptr<GameObject>& owner, const std::string& filename,
+		RenderComponent(const std::shared_ptr<GameObject>& owner, std::shared_ptr<Texture2D> texture,
 			const Rect& srcRect = Rect(), int offsetX = 0, int offsetY = 0, int dstWidth = 0, int dstHeight = 0);
 		void Start() override;
 		void Update(float deltaTime) override;

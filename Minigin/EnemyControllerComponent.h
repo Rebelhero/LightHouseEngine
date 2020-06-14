@@ -23,22 +23,23 @@ namespace Engine
 	public:
 		EnemyControllerComponent(const std::shared_ptr<GameObject>& owner,
 			std::vector<std::shared_ptr<ColliderComponent>> levelCollision, int width, int height);
-		void Start() override;
-		void Update(float deltaTime) override;
-		void Render() override;
+		virtual void Start() override;
+		virtual void Update(float deltaTime) override;
+		virtual void Render() override;
 
-		std::weak_ptr<GameObject> GetOwner();
-		bool IsIntersecting(Rect& other);
-		bool IsFrozen();
-		void Trap();
+		virtual std::weak_ptr<GameObject> GetOwner();
+		virtual bool IsIntersecting(Rect& other);
+		virtual bool IsFrozen();
+		virtual void Trap();
 
 		EnemyControllerComponent(const EnemyControllerComponent&) = delete;
 		EnemyControllerComponent(EnemyControllerComponent&&) = delete;
 		EnemyControllerComponent& operator= (const EnemyControllerComponent&) = delete;
 		EnemyControllerComponent& operator= (const EnemyControllerComponent&&) = delete;
 
-	private:
+	protected:
 		std::vector<std::shared_ptr<ColliderComponent>> m_LevelCollision{};
+		EnemyState m_OldState{};
 		EnemyState m_CurrentState{};
 		float m_Speed{ 100.f };
 		FVector2 m_Velocity{};

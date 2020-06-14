@@ -1,31 +1,31 @@
 #include "LightHousePCH.h"
-#include "BubbleComponent.h"
+#include "BoulderComponent.h"
 #include "GameObject.h"
 #include "ResourceManager.h"
+#include <memory>
 
-Engine::BubbleComponent::BubbleComponent(const std::shared_ptr<GameObject>& owner, bool isHeadingLeft,
-	int width, int height, bool deactivateBottom)
+Engine::BoulderComponent::BoulderComponent(const std::shared_ptr<GameObject>& owner, bool isHeadingLeft,
+	int width, int height)
 	: BaseComponent(owner)
 	, m_Width{ width }
 	, m_Height{ height }
-	, m_DeactivateBottom{ deactivateBottom }
 	, m_IsHeadingLeft{ isHeadingLeft }
 {
 
 }
 
-void Engine::BubbleComponent::Start()
+void Engine::BoulderComponent::Start()
 {
 }
 
-void Engine::BubbleComponent::Update(float deltaTime)
+void Engine::BoulderComponent::Update(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
 	if (!m_IsExecutedOnce)
 	{
 		Rect rect{ 0, 96, 16, 16 };
-		auto texture = ResourceManager::GetInstance().LoadTexture("sprites2.png");
+		auto texture = ResourceManager::GetInstance().LoadTexture("sprites3.png");
 		auto bubbleSprite = std::make_shared<Engine::RenderComponent>(m_pOwner.lock(), texture, rect, 0, 0, 32, 32);
 		m_pOwner.lock()->AddComponent(bubbleSprite);
 
@@ -35,29 +35,28 @@ void Engine::BubbleComponent::Update(float deltaTime)
 	if (m_FloatTime > 0.f)
 	{
 		std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
-		int x{};
+		float x{};
 
 		if (m_IsHeadingLeft)
 			x = pTransform->GetPosition().x - m_Speed * deltaTime;
 		else
 			x = pTransform->GetPosition().x + m_Speed * deltaTime;
 
-		pTransform->SetPosition(x, pTransform->GetPosition().y, pTransform->GetPosition().z);
+		pTransform->SetPosition((int)x, pTransform->GetPosition().y, pTransform->GetPosition().z);
 		m_FloatTime -= deltaTime;
-	}
-	else
-	{
-		////remove component
-		//m_pOwner.lock()->RemoveComponent(this);
-		////delete this;
 	}
 }
 
-void Engine::BubbleComponent::Render()
+void Engine::BoulderComponent::Render()
 {
 }
 
-bool Engine::BubbleComponent::IsIntersecting(Rect& other, float velocityY)
+const std::weak_ptr<Engine::GameObject>& Engine::BoulderComponent::GetOwner()
+{
+	return m_pOwner;
+}
+
+bool Engine::BoulderComponent::IsIntersecting(Rect& other, float velocityY)
 {
 	auto transform = m_pOwner.lock()->GetTransform()->GetPosition();
 	Rect collider{ (int)transform.x, (int)transform.y, m_Width, m_Height };
@@ -67,17 +66,10 @@ bool Engine::BubbleComponent::IsIntersecting(Rect& other, float velocityY)
 		collider.y < (other.y + other.height) &&
 		(collider.y + collider.height) > other.y;
 
-	//Allow the player to jump through platforms
-	if (m_DeactivateBottom)
-	{
-		if (velocityY < 0.f)
-			isIntersecting = false;
-	}
-
 	return isIntersecting;
 }
 
-bool Engine::BubbleComponent::IsTouchingGround(Rect& other)
+bool Engine::BoulderComponent::IsTouchingGround(Rect& other)
 {
 	auto transform = m_pOwner.lock()->GetTransform()->GetPosition();
 	Rect collider{ (int)transform.x, (int)transform.y, m_Width, m_Height };
@@ -89,13 +81,13 @@ bool Engine::BubbleComponent::IsTouchingGround(Rect& other)
 		(collider.x + collider.width) > other.x;
 }
 
-Rect Engine::BubbleComponent::GetRect()
+Rect Engine::BoulderComponent::GetRect()
 {
 	auto transform = m_pOwner.lock()->GetTransform()->GetPosition();
 	return Rect(transform.x, transform.y, m_Width, m_Height);
 }
 
-float Engine::BubbleComponent::GetRemainingLifeTime()
+float Engine::BoulderComponent::GetRemainingLifeTime()
 {
 	return m_FloatTime;
 }
