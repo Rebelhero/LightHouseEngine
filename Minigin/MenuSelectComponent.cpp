@@ -14,6 +14,8 @@ void Engine::MenuSelectComponent::Start()
 
 void Engine::MenuSelectComponent::Update(float deltaTime)
 {
+	UNREFERENCED_PARAMETER(deltaTime);
+
 	if (InputManager::GetInstance().IsPressed(0, Engine::ControllerButton::ButtonA) ||
 		InputManager::GetInstance().IsPressed(0, (DWORD)0x41))	//0x41 == "A"-Key
 		Engine::SceneManager::GetInstance().ChangeCurrentScene("MainScene");

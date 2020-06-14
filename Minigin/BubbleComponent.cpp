@@ -35,7 +35,7 @@ void Engine::BubbleComponent::Update(float deltaTime)
 	if (m_FloatTime > 0.f)
 	{
 		std::shared_ptr<Transform> pTransform = m_pOwner.lock()->GetTransform();
-		int x{};
+		float x{};
 
 		if (m_IsHeadingLeft)
 			x = pTransform->GetPosition().x - m_Speed * deltaTime;
@@ -92,7 +92,7 @@ bool Engine::BubbleComponent::IsTouchingGround(Rect& other)
 Rect Engine::BubbleComponent::GetRect()
 {
 	auto transform = m_pOwner.lock()->GetTransform()->GetPosition();
-	return Rect(transform.x, transform.y, m_Width, m_Height);
+	return Rect((int)transform.x, (int)transform.y, m_Width, m_Height);
 }
 
 float Engine::BubbleComponent::GetRemainingLifeTime()

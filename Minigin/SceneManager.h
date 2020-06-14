@@ -9,7 +9,7 @@ namespace Engine
 	public:
 		Scene& CreateScene(const std::string& name);
 		void AddScene(const std::shared_ptr<Scene>& scene);
-		std::string& GetCurrentScene();
+		//const std::string& GetCurrentScene();
 		void ChangeCurrentScene(const std::string& name);
 
 		void Start();

@@ -57,6 +57,7 @@ bool Engine::InputManager::IsPressed(int playerID, ControllerButton button) cons
 
 bool Engine::InputManager::IsPressed(int playerID, DWORD key) const
 {
+	UNREFERENCED_PARAMETER(playerID);
 	//Keyboard Input
 	return GetKeyState(key) & m_KeyboardPressed;
 }

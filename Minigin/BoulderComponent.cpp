@@ -42,7 +42,7 @@ void Engine::BoulderComponent::Update(float deltaTime)
 		else
 			x = pTransform->GetPosition().x + m_Speed * deltaTime;
 
-		pTransform->SetPosition((int)x, pTransform->GetPosition().y, pTransform->GetPosition().z);
+		pTransform->SetPosition(x, pTransform->GetPosition().y, pTransform->GetPosition().z);
 		m_FloatTime -= deltaTime;
 	}
 }
@@ -58,6 +58,8 @@ const std::weak_ptr<Engine::GameObject>& Engine::BoulderComponent::GetOwner()
 
 bool Engine::BoulderComponent::IsIntersecting(Rect& other, float velocityY)
 {
+	UNREFERENCED_PARAMETER(velocityY);
+
 	auto transform = m_pOwner.lock()->GetTransform()->GetPosition();
 	Rect collider{ (int)transform.x, (int)transform.y, m_Width, m_Height };
 
@@ -84,7 +86,7 @@ bool Engine::BoulderComponent::IsTouchingGround(Rect& other)
 Rect Engine::BoulderComponent::GetRect()
 {
 	auto transform = m_pOwner.lock()->GetTransform()->GetPosition();
-	return Rect(transform.x, transform.y, m_Width, m_Height);
+	return Rect((int)transform.x, (int)transform.y, m_Width, m_Height);
 }
 
 float Engine::BoulderComponent::GetRemainingLifeTime()

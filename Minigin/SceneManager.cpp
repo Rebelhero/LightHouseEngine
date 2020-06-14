@@ -46,11 +46,10 @@ void Engine::SceneManager::AddScene(const std::shared_ptr<Scene>& scene)
 	m_Scenes.push_back(scene);
 }
 
-std::string& Engine::SceneManager::GetCurrentScene()
-{
-	std::string name{ m_pCurrentScene->GetName() };
-	return name;
-}
+//const std::string& Engine::SceneManager::GetCurrentScene()
+//{
+//	return m_pCurrentScene->GetName();
+//}
 
 void Engine::SceneManager::ChangeCurrentScene(const std::string& name)
 {
